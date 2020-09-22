@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './Rating.css';
 
 export default function Rating(props) {
@@ -13,3 +14,22 @@ export default function Rating(props) {
     </div>
   );
 }
+
+Rating.propTypes = {
+  value: (props, propName, componentName) => {
+    const prop = props[propName];
+    if (!prop) {
+      return new Error(`${propName} is required in ${componentName}. Validation failed.`);
+    }
+    if (typeof prop != 'number') {
+      return new Error(`Invalid prop, ${propName} is expected to be a number in ${componentName}. ${typeof prop} found.`);
+    }
+    if (prop < 1 || prop > 5) {
+      return new Error(`Invalid prop, ${propName} should be in range 1 - 5 in ${componentName}. ${prop} found.`);
+    }
+  }
+};
+
+Rating.defaultProps = {
+  value: 1
+};
