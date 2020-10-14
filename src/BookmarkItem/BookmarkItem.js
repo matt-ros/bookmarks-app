@@ -4,6 +4,7 @@ import BookmarksContext from '../BookmarksContext';
 import PropTypes from 'prop-types';
 import config from '../config';
 import './BookmarkItem.css';
+import { withRouter } from 'react-router-dom';
 
 function deleteBookmarkRequest(bookmarkId, callback) {
   fetch(config.API_ENDPOINT + `/${bookmarkId}`, {
@@ -28,7 +29,7 @@ function deleteBookmarkRequest(bookmarkId, callback) {
     })
 }
 
-export default function BookmarkItem(props) {
+function BookmarkItem(props) {
   return (
     <BookmarksContext.Consumer>
       {(context) => (
@@ -59,6 +60,12 @@ export default function BookmarkItem(props) {
             >
               Delete
             </button>
+            <button
+              className='BookmarkItem__description'
+              onClick={() => props.history.push(`/update/${props.id}`)}
+            >
+              Update
+            </button>
           </div>
         </li>
       )}
@@ -88,6 +95,8 @@ BookmarkItem.propTypes = {
       return new Error(`Invalid prop, ${propName} must be min length 5 and begin http(s)://. Validation Failed.`);
     }
   },
-  rating: PropTypes.number,
+  rating: PropTypes.string,
   description: PropTypes.string
 };
+
+export default withRouter(BookmarkItem);

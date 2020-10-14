@@ -6,7 +6,7 @@ import BookmarksContext from './BookmarksContext';
 import Nav from './Nav/Nav';
 import config from './config';
 import './App.css';
-import Rating from './Rating/Rating';
+import UpdateBookmark from './UpdateBookmark/UpdateBookmark';
 
 class App extends Component {
   state = {
@@ -36,6 +36,21 @@ class App extends Component {
     })
   }
 
+  updateBookmark = updatedBookmark => {
+    const bookmarkToUpdate = this.state.bookmarks.find(bm => bm.id === updatedBookmark.id)
+    for (const field in updatedBookmark) {
+      bookmarkToUpdate[field] = updatedBookmark[field] ? updatedBookmark[field] : bookmarkToUpdate[field]
+    }
+    const newBookmarks = this.state.bookmarks.map(bm =>
+      (bm.id === updatedBookmark.id)
+        ? bookmarkToUpdate
+        : bm
+    )
+    this.setState({
+      bookmarks: newBookmarks
+    })
+  }
+
   componentDidMount() {
     fetch(config.API_ENDPOINT, {
       method: 'GET',
@@ -58,12 +73,12 @@ class App extends Component {
     const contextValue = {
       bookmarks: this.state.bookmarks,
       addBookmark: this.addBookmark,
-      deleteBookmark: this.deleteBookmark
+      deleteBookmark: this.deleteBookmark,
+      updateBookmark: this.updateBookmark
     }
     return (
       <main className='App'>
         <h1>Bookmarks!</h1>
-        <Rating value={4} />
         <BookmarksContext.Provider value={contextValue}>
           <Nav />
           <div className='content' aria-live='polite'>
@@ -75,6 +90,10 @@ class App extends Component {
               exact
               path='/'
               component={BookmarkList}
+            />
+            <Route
+              path='/update/:id'
+              component={UpdateBookmark}
             />
           </div>
         </BookmarksContext.Provider>
